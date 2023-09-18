@@ -1,0 +1,7 @@
+[flake8]
+max-line-length = 100
+builtins =
+        Actor, Rect, ZRect, animate, clock, exit, images, keyboard, keymods,
+        keys, mouse, music, screen, sounds, storage, tone
+
+ignore = F403, F405
