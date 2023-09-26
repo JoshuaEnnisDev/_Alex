@@ -3,19 +3,33 @@ import pgzrun
 WIDTH = 800
 HEIGHT = 600
 
-test_rect = Rect(20, 20, 100, 100)
-sandbag = Actor("tank_red")
+# actors
+tank = Actor("tank_sand")
+tree = Actor("tree")
+background = Actor("sand")
 
 
 def draw():
-    screen.clear()
-    sandbag.draw()
-    screen.draw.filled_rect(test_rect, "green")
+    background.draw()
+    tank.draw()
+    tree.draw()
 
 
+# runs 60 times per second
 def update():
-    # test_rect.x = test_rect.x + 2
-    sandbag.x = sandbag.x + 2
+    screen.clear()
+    if keyboard.a:
+        tank.x = tank.x - 2
+        tank.angle = 180
+    if keyboard.w:
+        tank.y = tank.y - 2
+        tank.angle = 90
+    if keyboard.d:
+        tank.x = tank.x + 2
+        tank.angle = 0
+    if keyboard.s:
+        tank.y = tank.y + 2
+        tank.angle = 270
 
 
 # last line
