@@ -3,6 +3,10 @@ import pgzrun
 WIDTH = 800
 HEIGHT = 600
 
+# empty list
+bullets = []
+bullet_speed = 5
+
 # actors
 tank = Actor("tank_sand")
 
@@ -47,6 +51,16 @@ def bound_actor(actor):
         actor.y = HEIGHT
 
 
+def remove_bullet():
+    for bullet in bullets:
+        # checks if bullet is off the screen
+        if bullet.x < 0 or bullet.x > WIDTH or bullet.y < 0 or bullet.y > HEIGHT:
+            bullets.remove(bullet)
+        # checks collision with the other player
+        if bullet.colliderect(tank2):
+            bullets.remove(bullet)
+
+
 def move_red():
     if keyboard.left:
         tank2.x = tank2.x - 2
@@ -62,20 +76,63 @@ def move_red():
         tank2.angle = 270
 
 
+def move_bullet():
+    for bullet in bullets:
+        # right
+        if bullet.angle == 0:
+            bullet.x += bullet_speed
+        # up
+        if bullet.angle == 90:
+            bullet.y -= bullet_speed
+        # left
+        if bullet.angle == 180:
+            bullet.x -= bullet_speed
+        # down
+        if bullet.angle == 270:
+            bullet.y += bullet_speed
+
+
+# this function is called when a key is pressed
+def on_key_down():
+    print(bullets)
+    if keyboard.f:
+        # create the bullet actor
+        bullet = Actor("bullet_blue")
+        # set the bullet's position and angle
+        bullet.x = tank.x
+        bullet.y = tank.y
+        bullet.angle = tank.angle
+        # add it to the list
+        bullets.append(bullet)
+
+
 def draw():
     background.draw()
     tank.draw()
     tree.draw()
     tank2.draw()
 
+    # draw all the bullets in the bullets list
+    for bullet in bullets:
+        bullet.draw()
+
 
 # runs 60 times per second
 def update():
     screen.clear()
+
+    original_x = tank.x
+    original_y = tank.y
+    if tank.colliderect(tree):
+        tank.x = original_x
+        tank.y = original_y
+
     move_tank()
     move_red()
     bound_actor(tank)
     bound_actor(tank2)
+    move_bullet()
+    remove_bullet()
 
 
 # last line
