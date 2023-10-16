@@ -13,12 +13,14 @@ tank = Actor("tank_sand")
 tank2 = Actor("tank_red")
 tank2.x = WIDTH - 50
 tank2.y = HEIGHT - 50
+tank2.timer = 30
 
 tree = Actor("tree")
 tree.x = 400
 tree.y = 300
 
 background = Actor("sand")
+explosions = ["explosion1, explosion2"]
 
 
 def move_tank():
@@ -52,6 +54,7 @@ def bound_actor(actor):
 
 
 def remove_bullet():
+
     for bullet in bullets:
         # checks if bullet is off the screen
         if bullet.x < 0 or bullet.x > WIDTH or bullet.y < 0 or bullet.y > HEIGHT:
@@ -120,12 +123,6 @@ def draw():
 # runs 60 times per second
 def update():
     screen.clear()
-
-    original_x = tank.x
-    original_y = tank.y
-    if tank.colliderect(tree):
-        tank.x = original_x
-        tank.y = original_y
 
     move_tank()
     move_red()
