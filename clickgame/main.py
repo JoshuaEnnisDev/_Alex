@@ -13,14 +13,32 @@ tank = Actor("tank_sand")
 tank2 = Actor("tank_red")
 tank2.x = WIDTH - 50
 tank2.y = HEIGHT - 50
-tank2.timer = 30
+tank2.is_exploding = False
+tank2.is_dead = False
 
 tree = Actor("tree")
 tree.x = 400
 tree.y = 300
 
 background = Actor("sand")
-explosions = ["explosion1, explosion2"]
+
+explosions = ["explosion1", "explosion2", "explosion3", "explosion4", "explosion5"]
+timer = 15
+index = 0
+
+
+def explode():
+    global timer
+    global index
+    if tank2.is_exploding:
+        tank2.image = explosions[index]
+        timer = timer - 1
+        if timer <= 0:
+            timer = 15
+            if index == len(explosions) - 1:
+                tank2.is_exploding = False
+                tank2.is_dead = True
+            index = index + 1
 
 
 def move_tank():
@@ -62,6 +80,7 @@ def remove_bullet():
         # checks collision with the other player
         if bullet.colliderect(tank2):
             bullets.remove(bullet)
+            tank2.is_exploding = True
 
 
 def move_red():
@@ -113,7 +132,11 @@ def draw():
     background.draw()
     tank.draw()
     tree.draw()
-    tank2.draw()
+    
+    if not tank2.is_dead:
+        tank2.draw()
+    else:
+        tank2.pos = (-100, -100)
 
     # draw all the bullets in the bullets list
     for bullet in bullets:
@@ -123,14 +146,13 @@ def draw():
 # runs 60 times per second
 def update():
     screen.clear()
-
     move_tank()
     move_red()
     bound_actor(tank)
     bound_actor(tank2)
     move_bullet()
     remove_bullet()
-
+    explode()
 
 # last line
 pgzrun.go()
