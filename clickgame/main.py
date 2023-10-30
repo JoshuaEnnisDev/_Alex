@@ -27,6 +27,18 @@ explosions = ["explosion1", "explosion2", "explosion3", "explosion4", "explosion
 timer = 20
 index = 0
 
+# game state
+start_screen = True
+game_active = False
+game_over = False
+
+# start screen
+tank_button_image = Actor("tank_sand", (200, 200))
+tank_button = Rect(150, 150, 100, 100)
+
+tank2_button_image = Actor("tank_red", (400, 200))
+tank2_button = Rect(350, 150, 100, 100)
+
 
 def move_tank():
     if keyboard.a:
@@ -101,6 +113,20 @@ def move_bullet():
             bullet.y += bullet_speed
 
 
+def on_mouse_down(pos):
+    global start_screen
+    global game_active
+    if start_screen:
+        if tank_button.collidepoint(pos):
+            start_screen = False
+            game_active = True
+            tank.image = "tank_sand"
+        elif tank2_button.collidepoint(pos):
+            tank.image = "tank_red"
+            start_screen = False
+            game_active = True
+
+
 # this function is called when a key is pressed
 def on_key_down():
     print(bullets)
@@ -116,17 +142,27 @@ def on_key_down():
 
 
 def draw():
-    background.draw()
-    tank.draw()
-    tree.draw()
-    if not tank2.dead:
-        tank2.draw()
-    else:
-        tank2.pos = (-100, -100)
+    if game_active:
+        background.draw()
+        tank.draw()
+        tree.draw()
+        if not tank2.dead:
+            tank2.draw()
+        else:
+            tank2.pos = (-100, -100)
 
-    # draw all the bullets in the bullets list
-    for bullet in bullets:
-        bullet.draw()
+        # draw all the bullets in the bullets list
+        for bullet in bullets:
+            bullet.draw()
+    elif start_screen:
+        screen.draw.text("Tanks!", (400, 200), fontsize=50)
+        screen.draw.text("Choose your character", (400, 300), fontsize=40)
+        screen.draw.filled_rect(tank_button, "green")
+        tank_button_image.draw()
+        screen.draw.filled_rect(tank2_button, "green")
+        tank2_button_image.draw()
+    else:
+        pass
 
 
 def explode(actor):
@@ -141,6 +177,7 @@ def explode(actor):
                 actor.hit = False
                 actor.dead = True
             index += 1
+
 
 
 # runs 60 times per second
