@@ -33,19 +33,52 @@ game_active = False
 game_over = False
 
 # start screen
-tank_button_image = Actor("tank_sand", (250, 200))
-tank_button = Rect(200, 150, 100, 100)
+tank_button = Rect(200, 300, 100, 100)
+# tank_button_image = Actor("tank_sand", tank_button.center, anchor=('center', 'center'))
+tank_button_image = Actor("tank_sand")
+tank_button_image.x = tank_button.centerx
+tank_button_image.y = tank_button.centery
 
-tank2_button_image = Actor("tank_red", (400, 200))
-tank2_button = Rect(350, 150, 100, 100)
+
+tank2_button = Rect(400, 300, 100, 100, anchor=(0.5, 0.5))
+tank2_button_image = Actor("tank_red", tank2_button.center)
+
+
+def draw_start_screen():
+    screen.draw.text("Tanks!", fontsize=50, centerx=WIDTH / 2, centery=100)
+    screen.draw.text(
+        "Choose your character",
+        centerx=WIDTH / 2,
+        centery=200,
+        fontsize=40,
+        shadow=(0.5, 0.5),
+        scolor="blue",
+        angle=25
+        )
+
+    screen.draw.filled_rect(tank_button, "green")
+    tank_button_image.draw()
+    screen.draw.filled_rect(tank2_button, "green")
+    tank2_button_image.draw()
 
 
 def choose_character(pos):
+    global start_screen
+    global game_active
     if tank_button.collidepoint(pos):
         tank.image = "tank_sand"
+        start_screen = False
+        game_active = True
     if tank2_button.collidepoint(pos):
         tank.image = "tank_red"
-    
+        start_screen = False
+        game_active = True
+
+
+def draw_button(image, color, rect):
+    screen.draw.filled_rect(rect, color)
+    screen.blit(image, rect.center)
+
 
 def move_tank():
     if keyboard.a:
@@ -77,16 +110,32 @@ def bound_actor(actor):
         actor.y = HEIGHT
 
 
-def remove_bullet():
-
+def bullet_left_screen():
     for bullet in bullets:
         # checks if bullet is off the screen
         if bullet.x < 0 or bullet.x > WIDTH or bullet.y < 0 or bullet.y > HEIGHT:
-            bullets.remove(bullet)
-        # checks collision with the other player
+            # bullets.remove(bullet)
+            return True
+
+
+def get_bullet():
+    for bullet in bullets:
+        if bullet_left_screen():
+            return bullet
         if bullet.colliderect(tank2):
-            bullets.remove(bullet)
             tank2.hit = True
+            return bullet
+
+
+def remove_bullet():
+    if not get_bullet() is None:
+        bullets.remove(get_bullet())
+        
+
+def collide_tank():
+    if tank.colliderect(tank2):
+        tank2.hit = True
+        tank.hit = True
 
 
 def move_red():
@@ -125,16 +174,6 @@ def on_mouse_down(pos):
     global game_active
     if start_screen:
         choose_character(pos)
-        start_screen = False
-        game_active = True
-        # if tank_button.collidepoint(pos):
-        #     start_screen = False
-        #     game_active = True
-        #     tank.image = "tank_sand"
-        # elif tank2_button.collidepoint(pos):
-        #     tank.image = "tank_red"
-        #     start_screen = False
-        #     game_active = True
 
 
 # this function is called when a key is pressed
@@ -165,12 +204,7 @@ def draw():
         for bullet in bullets:
             bullet.draw()
     elif start_screen:
-        screen.draw.text("Tanks!", (300, 100), fontsize=50)
-        screen.draw.text("Choose your character", (300, 300), fontsize=40)
-        screen.draw.filled_rect(tank_button, "green")
-        tank_button_image.draw()
-        screen.draw.filled_rect(tank2_button, "green")
-        tank2_button_image.draw()
+        draw_start_screen()
     else:
         pass
 
@@ -189,7 +223,6 @@ def explode(actor):
             index += 1
 
 
-
 # runs 60 times per second
 def update():
     screen.clear()
@@ -199,7 +232,9 @@ def update():
     bound_actor(tank2)
     move_bullet()
     remove_bullet()
+    collide_tank()
     explode(tank2)
+    
 
 # last line
 pgzrun.go()
