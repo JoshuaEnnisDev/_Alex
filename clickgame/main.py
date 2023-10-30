@@ -33,12 +33,19 @@ game_active = False
 game_over = False
 
 # start screen
-tank_button_image = Actor("tank_sand", (200, 200))
-tank_button = Rect(150, 150, 100, 100)
+tank_button_image = Actor("tank_sand", (250, 200))
+tank_button = Rect(200, 150, 100, 100)
 
 tank2_button_image = Actor("tank_red", (400, 200))
 tank2_button = Rect(350, 150, 100, 100)
 
+
+def choose_character(pos):
+    if tank_button.collidepoint(pos):
+        tank.image = "tank_sand"
+    if tank2_button.collidepoint(pos):
+        tank.image = "tank_red"
+    
 
 def move_tank():
     if keyboard.a:
@@ -117,14 +124,17 @@ def on_mouse_down(pos):
     global start_screen
     global game_active
     if start_screen:
-        if tank_button.collidepoint(pos):
-            start_screen = False
-            game_active = True
-            tank.image = "tank_sand"
-        elif tank2_button.collidepoint(pos):
-            tank.image = "tank_red"
-            start_screen = False
-            game_active = True
+        choose_character(pos)
+        start_screen = False
+        game_active = True
+        # if tank_button.collidepoint(pos):
+        #     start_screen = False
+        #     game_active = True
+        #     tank.image = "tank_sand"
+        # elif tank2_button.collidepoint(pos):
+        #     tank.image = "tank_red"
+        #     start_screen = False
+        #     game_active = True
 
 
 # this function is called when a key is pressed
@@ -155,8 +165,8 @@ def draw():
         for bullet in bullets:
             bullet.draw()
     elif start_screen:
-        screen.draw.text("Tanks!", (400, 200), fontsize=50)
-        screen.draw.text("Choose your character", (400, 300), fontsize=40)
+        screen.draw.text("Tanks!", (300, 100), fontsize=50)
+        screen.draw.text("Choose your character", (300, 300), fontsize=40)
         screen.draw.filled_rect(tank_button, "green")
         tank_button_image.draw()
         screen.draw.filled_rect(tank2_button, "green")
