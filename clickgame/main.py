@@ -2,7 +2,7 @@ import pgzrun
 
 WIDTH = 800
 HEIGHT = 600
-
+TITLE = "Dev"
 # empty list
 bullets = []
 bullet_speed = 5
