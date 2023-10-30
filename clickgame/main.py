@@ -9,6 +9,8 @@ bullet_speed = 5
 
 # actors
 tank = Actor("tank_sand")
+tank.is_exploding = False
+tank.is_dead = False
 
 tank2 = Actor("tank_red")
 tank2.x = WIDTH - 50
@@ -27,17 +29,17 @@ timer = 15
 index = 0
 
 
-def explode():
+def explode(actor):
     global timer
     global index
-    if tank2.is_exploding:
-        tank2.image = explosions[index]
+    if actor.is_exploding:
+        actor.image = explosions[index]
         timer = timer - 1
         if timer <= 0:
             timer = 15
             if index == len(explosions) - 1:
-                tank2.is_exploding = False
-                tank2.is_dead = True
+                actor.is_exploding = False
+                actor.is_dead = True
             index = index + 1
 
 
@@ -114,6 +116,11 @@ def move_bullet():
             bullet.y += bullet_speed
 
 
+def collision():
+    if tank.colliderect(tank2):
+        tank.is_exploding = True
+
+
 # this function is called when a key is pressed
 def on_key_down():
     print(bullets)
@@ -129,18 +136,27 @@ def on_key_down():
 
 
 def draw():
-    background.draw()
-    tank.draw()
-    tree.draw()
-    
-    if not tank2.is_dead:
-        tank2.draw()
-    else:
-        tank2.pos = (-100, -100)
+    if not tank.is_dead and not tank2.is_dead:
+        background.draw()
+        tank.draw()
+        tree.draw()
+        
+        if not tank2.is_dead:
+            tank2.draw()
+        else:
+            tank2.pos = (-100, -100)
+        
+        if not tank.is_dead:
+            tank.draw()
+        else:
+            tank.pos = (-200, -200)
 
-    # draw all the bullets in the bullets list
-    for bullet in bullets:
-        bullet.draw()
+        # draw all the bullets in the bullets list
+        for bullet in bullets:
+            bullet.draw()
+    else:
+        screen.clear()
+        screen.draw.text("Game over!", (0, 0), fontsize=100)
 
 
 # runs 60 times per second
@@ -152,7 +168,9 @@ def update():
     bound_actor(tank2)
     move_bullet()
     remove_bullet()
-    explode()
+    collision()
+    explode(tank2)
+    explode(tank)
 
 # last line
 pgzrun.go()
