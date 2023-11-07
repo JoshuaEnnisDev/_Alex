@@ -27,6 +27,9 @@ background = Actor("sand")
 explosions = ["explosion1", "explosion2", "explosion3", "explosion4", "explosion5"]
 timer = 15
 index = 0
+select_screen = True
+
+
 
 
 def explode(actor):
@@ -38,9 +41,15 @@ def explode(actor):
         if timer <= 0:
             timer = 15
             if index == len(explosions) - 1:
+                # actor.pos = (-100, -100)
                 actor.is_exploding = False
                 actor.is_dead = True
             index = index + 1
+
+
+def check_dead(actor):
+    if actor.is_dead:
+        actor.pos = (-100, -100)
 
 
 def move_tank():
@@ -74,7 +83,6 @@ def bound_actor(actor):
 
 
 def remove_bullet():
-
     for bullet in bullets:
         # checks if bullet is off the screen
         if bullet.x < 0 or bullet.x > WIDTH or bullet.y < 0 or bullet.y > HEIGHT:
@@ -124,7 +132,7 @@ def collision():
 # this function is called when a key is pressed
 def on_key_down():
     print(bullets)
-    if keyboard.f:
+    if keyboard.f and not tank.is_exploding:
         # create the bullet actor
         bullet = Actor("bullet_blue")
         # set the bullet's position and angle
@@ -135,12 +143,30 @@ def on_key_down():
         bullets.append(bullet)
 
 
+button1 = Rect(200, 150, 100, 100)
+button1_image = Actor("tank_sand", button1.center)
+
+
+def on_mouse_down(pos):
+    global select_screen
+    if button1.collidepoint(pos):
+        select_screen = False
+
+
 def draw():
-    if not tank.is_dead and not tank2.is_dead:
+    # select screen
+    global select_screen
+    if select_screen:
+        screen.fill("#e69d29")
+        screen.draw.text("Tanks", center=(WIDTH / 2, 50), fontsize=50)
+        screen.draw.filled_rect(button1, "#15701d")
+        button1_image.draw()
+    # main game
+    elif not tank.is_dead and not tank2.is_dead:
         background.draw()
         tank.draw()
         tree.draw()
-        
+
         if not tank2.is_dead:
             tank2.draw()
         else:
@@ -154,6 +180,7 @@ def draw():
         # draw all the bullets in the bullets list
         for bullet in bullets:
             bullet.draw()
+    # game over screen
     else:
         screen.clear()
         screen.draw.text("Game over!", (0, 0), fontsize=100)
@@ -171,6 +198,9 @@ def update():
     collision()
     explode(tank2)
     explode(tank)
+    check_dead(tank)
+    check_dead(tank2)
+
 
 # last line
 pgzrun.go()
