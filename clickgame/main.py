@@ -30,8 +30,6 @@ index = 0
 select_screen = True
 
 
-
-
 def explode(actor):
     global timer
     global index
