@@ -129,7 +129,6 @@ def collision():
 
 # this function is called when a key is pressed
 def on_key_down():
-    print(bullets)
     if keyboard.f and not tank.is_exploding:
         # create the bullet actor
         bullet = Actor("bullet_blue")
@@ -162,7 +161,6 @@ def draw():
     # main game
     elif not tank.is_dead and not tank2.is_dead:
         background.draw()
-        tank.draw()
         tree.draw()
 
         if not tank2.is_dead:
