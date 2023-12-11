@@ -24,7 +24,6 @@ scissors_btn = Actor("scissors", (650, 200))
 def game_play():
     global display_text
     display_text = ""
-        
     # this checks if both choices are the same
     if player_choice == brain:
         display_text = "Tie"
@@ -60,13 +59,13 @@ def draw():
 # gets called when we click any mouse button
 def on_mouse_down(pos):
     global player_choice
+    global display_text
     if paper_btn.collidepoint(pos):
         player_choice = "paper"
     elif rock_btn.collidepoint(pos):
         player_choice = "rock"
     elif scissors_btn.collidepoint(pos):
         player_choice = "scissors"
-    game_play()
 
 
 # gets called 60 times a second
