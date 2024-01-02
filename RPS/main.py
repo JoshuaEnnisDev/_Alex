@@ -13,6 +13,7 @@ brain = ""
 display_text = ""
 player_score = 0
 brain_score = 0
+com_score = 0
 
 # create actors
 paper_btn = Actor("paper", (150, 200))
@@ -20,7 +21,7 @@ rock_btn = Actor("rock", (400, 200))
 scissors_btn = Actor("scissors", (650, 200))
 
 
-def get_winner(player_choice, brain):
+def get_winner():
     global player_score
     global com_score
     
@@ -69,6 +70,8 @@ def draw():
 def on_mouse_down(pos):
     global brain
     global player_choice
+    global display_text
+    display_text = ""
     brain = random.choice(brain_choices)
     if paper_btn.collidepoint(pos):
         player_choice = "paper"
@@ -76,7 +79,7 @@ def on_mouse_down(pos):
         player_choice = "rock"
     elif scissors_btn.collidepoint(pos):
         player_choice = "scissors"
-    display()
+    clock.schedule_unique(display, 0.5)
 
 
 def display():
@@ -84,8 +87,10 @@ def display():
     display_text = f'''
     Computer chooses: {brain}
     Player Chooses: {player_choice}
-    
+
         {get_winner()}
+    Player Score: {player_score}
+    Computer Score: {com_score}
     '''
 
 
@@ -93,8 +98,6 @@ def display():
 def update():
     pass
 
+
 pgzrun.go()
 
-player_score = player_score + 1
-
-player_score += 1
