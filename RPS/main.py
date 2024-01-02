@@ -12,7 +12,7 @@ player_choice = ""
 brain = ""
 display_text = ""
 player_score = 0
-com_score = 0
+brain_score = 0
 
 # create actors
 paper_btn = Actor("paper", (150, 200))
@@ -94,3 +94,7 @@ def update():
     pass
 
 pgzrun.go()
+
+player_score = player_score + 1
+
+player_score += 1
